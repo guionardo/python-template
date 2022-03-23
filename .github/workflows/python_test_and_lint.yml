@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      has_coverage: ${{ steps.generate_coverage.outputs.has_coverage }}
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
@@ -52,20 +54,26 @@ jobs:
           coverage run -m unittest
 
       - name: Generate coverage report
+        id: generate_coverage
         run: |
-          echo "# Coverage report $(date)" > coverage.txt
-          echo "" >> coverage.txt
-          echo "```bash" >> coverage.txt
-          coverage report >> coverage.txt
-          echo "```" >> coverage.txt
+          echo "# Coverage report $(date)" > coverage.tmp
+          echo "" >> coverage.tmp
+          echo "```bash" >> coverage.tmp
+          coverage report >> coverage.tmp
+          echo "```" >> coverage.tmp
+          if cmp -s "coverage.tmp" "coverage.md"; then
+            echo "No change to coverage"
+            rm coverage.tmp
+          else
+            mv coverage.tmp coverage.md
+            echo ::set-output name=has_coverage::True
+          fi
 
-      - name: Commit coverage report
-        run: |          
-          git add coverage.txt
-          git commit -m "Updating coverage report"
-
-      - name: Push changes # push the output folder to your repo
-        uses: ad-m/github-push-action@master
+  conditional_job:
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: needs.build.outputs.has_coverage == 'True'
+    steps:
+      - uses: stefanzweifel/git-auto-commit-action@v4
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          force: true
+          commit_message: Update coverage report
