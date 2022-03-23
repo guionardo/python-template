@@ -1,6 +1,10 @@
 name: Testing and Linting
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+      - develop
 
 jobs:
   build:
@@ -46,3 +50,22 @@ jobs:
       - name: Run coverage
         run: |
           coverage run -m unittest
+
+      - name: Generate coverage report
+        run: |
+          echo "# Coverage report $(date)" > coverage.txt
+          echo "" >> coverage.txt
+          echo "```bash" >> coverage.txt
+          coverage report >> coverage.txt
+          echo "```" >> coverage.txt
+
+      - name: Commit coverage report
+        run: |          
+          git add coverage.txt
+          git commit -m "Updating coverage report"
+
+      - name: Push changes # push the output folder to your repo
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          force: true
