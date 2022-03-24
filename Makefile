@@ -7,4 +7,4 @@ coverage:
 	coverage report
 
 requirements:
-	pipreqs
+	pipreqs --force

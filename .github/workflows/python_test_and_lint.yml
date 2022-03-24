@@ -58,18 +58,21 @@ jobs:
           echo "\`\`\`bash" >> coverage.tmp
           coverage report >> coverage.tmp
           echo "\`\`\`" >> coverage.tmp
-          if cmp -s "coverage.tmp" "coverage.md"; then
+          echo "" >> coverage.tmp
+          echo "Automatically generated file by github action"
+          
+          if cmp -s "coverage.tmp" "COVERAGE.md"; then
             echo "No change to coverage"
           else            
             echo ::set-output name=has_coverage::True
-            mv coverage.tmp coverage.md
+            mv coverage.tmp COVERAGE.md
           fi
 
       - uses: actions/upload-artifact@v2
         if: steps.generate_coverage.outputs.has_coverage == 'True'
         with:
           name: coverage_md
-          path: coverage.md
+          path: COVERAGE.md
 
   coverage_commit:
     runs-on: ubuntu-latest
