@@ -1,10 +1,11 @@
+updatepip:
+	pipenv update -d
+
 test:
 	python -m unittest
 
 coverage:
-	coverage run -m unittest
-	coverage xml
-	coverage report
+	bash .github/scripts/generate_coverage.sh	
 
 requirements:
 	pipreqs --force
