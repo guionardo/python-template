@@ -17,7 +17,11 @@ Ready to work
 
 ### make updatepip (install needed packages)
 
-Make sure pipenv is installed before run this command.
+Make sure pipenv is installed before run this command. 
+
+```bash
+pip install --user pipenv
+```
 
 ```bash
 Running $ pipenv lock then $ pipenv sync.
