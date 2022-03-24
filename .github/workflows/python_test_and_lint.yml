@@ -10,7 +10,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      has_coverage: ${{ steps.generate_coverage.outputs.has_coverage }}      
+      has_coverage: ${{ steps.generate_coverage.outputs.has_coverage }}
     strategy:
       matrix:
         python-version: ["3.8", "3.9", "3.10"]
@@ -50,12 +50,9 @@ jobs:
           pytest
 
       - name: Run coverage
-        run: |
-          coverage run -m unittest
-
-      - name: Generate coverage report
         id: generate_coverage
         run: |
+          coverage run -m unittest
           echo "# Coverage report $(date)" > coverage.tmp
           echo "" >> coverage.tmp
           echo "```bash" >> coverage.tmp
@@ -74,7 +71,7 @@ jobs:
           name: coverage_md
           path: coverage.md
 
-  conditional_job:
+  coverage_commit:
     runs-on: ubuntu-latest
     needs: [build]
     if: needs.build.outputs.has_coverage == 'True'
