@@ -55,9 +55,9 @@ jobs:
           coverage run -m unittest
           echo "# Coverage report $(date)" > coverage.tmp
           echo "" >> coverage.tmp
-          echo "```bash" >> coverage.tmp
+          echo "\`\`\`bash" >> coverage.tmp
           coverage report >> coverage.tmp
-          echo "```" >> coverage.tmp
+          echo "\`\`\`" >> coverage.tmp
           if cmp -s "coverage.tmp" "coverage.md"; then
             echo "No change to coverage"
           else            
